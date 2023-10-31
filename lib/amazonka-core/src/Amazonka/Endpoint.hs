@@ -74,7 +74,7 @@ defaultEndpoint Service {endpointPrefix = p} r = go (CI.mk p)
     virginia = r == NorthVirginia
     frankfurt = r == Frankfurt
     china = r == Beijing
-    govcloud = r == GovCloudEast || r == GovCloudWest
+    govcloud = r == GovCloudEast || r == GovCloudWest || r == Hyderabad || r == Mumbai
 
     region host =
       Endpoint
