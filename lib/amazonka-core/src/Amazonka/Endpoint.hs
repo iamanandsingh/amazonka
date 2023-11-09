@@ -16,6 +16,9 @@ import Amazonka.Data.ByteString
 import Amazonka.Prelude
 import Amazonka.Types
 import qualified Data.CaseInsensitive as CI
+import System.Environment as Environment
+import GHC.IO (unsafePerformIO)
+import qualified Data.Text as Text
 
 -- | A convenience function for overriding the 'Service' 'Endpoint'.
 --
@@ -74,7 +77,7 @@ defaultEndpoint Service {endpointPrefix = p} r = go (CI.mk p)
     virginia = r == NorthVirginia
     frankfurt = r == Frankfurt
     china = r == Beijing
-    govcloud = r == GovCloudEast || r == GovCloudWest || r == Hyderabad || r == Mumbai
+    govcloud = r == GovCloudEast || r == GovCloudWest || shouldMakeURLFromRegionSTS
 
     region host =
       Endpoint
@@ -95,3 +98,8 @@ defaultEndpoint Service {endpointPrefix = p} r = go (CI.mk p)
         }
 
     reg = toBS r
+
+    shouldMakeURLFromRegionSTS :: Bool
+    shouldMakeURLFromRegionSTS =
+      let mval = unsafePerformIO $ Environment.lookupEnv "SHOULD_MAKE_URL_FROM_REGION_STS"
+      in maybe False (\x -> (Text.toLower . Text.pack) x == "true") mval
